@@ -41,11 +41,11 @@ addEventListener("keyup", function (e) {
 
 addEventListener("click", function(e) {
     var goode = A.cleanCoords(e);
-    debugger;
-    if (A.wallsAvailable === 0) {
-        alert("Sorry, you don't have any walls available. Sell a soldier to buy a wall.");
-    }
-    if (A.wallsAvailable > 0 && goode.x < A.canvas.width && goode.y < A.canvas.height) {
+    if (goode.x < A.canvas.width && goode.y < A.canvas.height) {
+        if (A.wallsAvailable === 0) {
+            alert("Sorry, you don't have any walls available. Sell 1 soldier to buy 5 walls.");
+            return null;
+        }
         var gridcoords = {
             i: Math.floor(goode.y / GRID),
             j: Math.floor(goode.x / GRID)
@@ -81,6 +81,7 @@ var SOLDIER1 = "#CC0000";
 var SOLDIER2 = "#0000CC";
 var FOOD = "#00FF88";
 var WALL = "#000000";
+var WALLSPERSOLDIER = 5;
 
 A.wallsAvailable = 0;
 
@@ -125,8 +126,9 @@ function handleSell() {
     // remove that random soldier from the field
     A.world[coords.i][coords.j] = NULL;
     // yay, give the player a wall to use
-    A.wallsAvailable += 1;
-    alert("you now have a wall. click on the grid to place it at any time.");
+    A.wallsAvailable += WALLSPERSOLDIER;
+    A.soldier1Count -= 1;
+    alert("The life of your soldier has bought you " + WALLSPERSOLDIER + " walls. \nClick on the grid to place it at any time.");
     A.world.draw();
 };
 
@@ -211,84 +213,73 @@ function countNeighboring (thing, i, j) {
     return cnt;
 }
 
+function soldierRules(soldier, other, i, j) {
+    // if surrounded by others... kill the 'current' soldier... turn him into food
+    if (countNeighboring(other, i, j) > 2) {
+        A.world[i][j] = FOOD;
+        if (soldier === SOLDIER1) {
+            A.soldier1Count -= 1;
+        } else {
+            A.soldier2Count -= 1;
+        }
+        A.foodCount += 1;
+    } else if (countNeighboring(FOOD, i, j) > 0) {
+        var coords = findNeighboring(FOOD, i, j);
+        // find the first clockwise food and replace it with the soldier
+        A.world[coords.row][coords.col] = soldier;
+        A.foodCount -= 1;
+        // replace soldier with nothing
+        A.world[i][j] = NULL;
+    } else { // nothing around! what the...
+        var rand = Math.round(Math.random() * 2 - 1);
+        var rand2 = Math.round(Math.random() * 2 - 1);
+        if (A.world[i + rand] && A.world[i + rand][j + rand2]) {
+            if (rand !== 0 && rand2 !== 0) {
+                if (soldier === SOLDIER1) {
+                    A.world[i + rand][j + rand2] = SOLDIER1;
+                } else {
+                    A.world[i + rand][j + rand2] = SOLDIER2;
+                }
+                A.world[i][j] = NULL;
+            }
+        }
+    }
+}
 
-
-function applyRules(world) {
+function applyRules() {
     for (var i = 0; i < A.ROWS; i++) {
         for (var j = 0; j < A.COLS; j++) {
-            if (world[i][j] === SOLDIER1) { // if soldier1....
-                // if surrounded by soldier2s... kill the 'current' soldier1... turn him into food
-                if (countNeighboring(SOLDIER2, i, j) > 2) {
-                    world[i][j] = FOOD;
-                    A.soldier1Count -= 1;
-                    A.foodCount += 1;
-                } else if (countNeighboring(FOOD, i, j) > 0) {
-                    var coords = findNeighboring(FOOD, i, j);
-                    // find the first clockwise food and replace it with soldier
-                    world[coords.row][coords.col] = SOLDIER1;
-                    A.foodCount -= 1;
-                    // replace soldier with nothing
-                    world[i][j] = NULL;
-                } else { // nothing around! what the...
-                    var rand = Math.round(Math.random() * 2 - 1);
-                    var rand2 = Math.round(Math.random() * 2 - 1);
-                    if (world[i + rand] && world[i + rand][j + rand2]) {
-                        if (rand !== 0 && rand2 !== 0) {
-                            world[i + rand][j + rand2] = SOLDIER1;
-                            world[i][j] = NULL;
-                        }
-                    }
-                }
+            if (A.world[i][j] === SOLDIER1) { // if soldier1....
+                soldierRules(SOLDIER1, SOLDIER2, i, j);
             }
-            if (world[i][j] === SOLDIER2) { // if soldier2....
-                // if surrounded by soldier1s... kill the 'current' soldier1... turn him into food
-                if (countNeighboring(SOLDIER1, i, j) > 2) {
-                    world[i][j] = FOOD;
-                    A.soldier2Count -= 1;
-                    A.foodCount += 1;
-                } else if (countNeighboring(FOOD, i, j) > 0) {
-                    var coords = findNeighboring(FOOD, i, j);
-                    // find the first clockwise food and replace it with soldier
-                    world[coords.row][coords.col] = SOLDIER2;
-                    // replace soldier with nothing
-                    world[i][j] = NULL;
-                    A.foodCount -= 1;
-                } else { // nothing all over the place! what the...
-                    var rand = Math.round(Math.random() * 2 - 1);
-                    var rand2 = Math.round(Math.random() * 2 - 1);
-                    if (world[i + rand] && world[i + rand][j + rand2]) {
-                        if (rand !== 0 && rand2 !== 0) {
-                            world[i + rand][j + rand2] = SOLDIER2;
-                            world[i][j] = NULL;
-                        }
-                    }
-                }
+            if (A.world[i][j] === SOLDIER2) { // if soldier2....
+                soldierRules(SOLDIER2, SOLDIER1, i, j);
             }
-            if (world[i][j] === FOOD) { // if food....
+            if (A.world[i][j] === FOOD) { // if food....
                 // if surrounded by foods... randomly spawn either a soldier1 or soldier2
                 if (countNeighboring(FOOD, i, j) > 3) {
                     var rand = Math.random();
                     if (rand < 0.1) {
-                        world[i][j] = SOLDIER1;
+                        A.world[i][j] = SOLDIER1;
                         A.soldier1Count += 1;
                         A.foodCount -= 1;
                     } else if (rand < 0.2) {
-                        world[i][j] = SOLDIER2;
+                        A.world[i][j] = SOLDIER2;
                         A.soldier2Count += 1;
                         A.foodCount -= 1;
                     }
                 };
             }
-            if (world[i][j] === 9) { // if nothing...
+            if (A.world[i][j] === 9) { // if nothing...
                 var rand = function(){Math.random()};
                 if (rand <= 0.1) {
-                    world[i][j] = SOLDIER1;
+                    A.world[i][j] = SOLDIER1;
                     A.soldier1Count += 1;
                 } else if (rand <= 0.2) {
-                    world[i][j] = SOLDIER2;
+                    A.world[i][j] = SOLDIER2;
                     A.soldier2Count += 1;
                 } else if (Math.random() <= 0.3) {
-                    world[i][j] = FOOD; // spawn some food maybe
+                    A.world[i][j] = FOOD; // spawn some food maybe
                     A.foodCount += 1;
                 }
             }
