@@ -55,16 +55,16 @@ window.requestAnimFrame = (function(){
 var THE_BLACK = 0;
 var THE_WHITE = 0xFF;
 
-A.createWorld = function(n, world) {
+function createWorld(n, world) {
     for (var i = 0; i < n; i++) {
         var k = parseInt(Math.random()*A.canvas.width*A.canvas.height)*4;
-        A.world.data[k] = THE_WHITE;
-        A.world.data[k+1] = THE_WHITE;
-        A.world.data[k+2] = THE_WHITE;
+        world.data[k] = THE_WHITE;
+        world.data[k+1] = THE_WHITE;
+        world.data[k+2] = THE_WHITE;
     }
 }
 
-A.applyRules = function(world, newWorld) {
+function applyRules(world, newWorld) {
     // highly optimized
     var width = A.canvas.width*4;
     var d = world.data;
@@ -104,37 +104,20 @@ A.applyRules = function(world, newWorld) {
     // all other cases - dead
 }
 
-function getLiveNeighbours(id, data) {
-    var x = id % A.canvas.width;
-    var y = parseInt(id / A.canvas.width);
+function mainLoop() {
+    var start = new Date();
     
-    var cnt = 0;
-    for (var i = -1; i < 2; i++) {
-        for (var j = -1; j < 2; j++) {
-            if ((i != 0 || j != 0) &&
-                !(x+i < 0 || x+i >= A.canvas.width || y+j < 0 || y+j >= A.canvas.height) &&
-                data.data[4*((y+j)*A.canvas.width+(x+i))] != THE_BLACK) {
-                cnt++;
-            }
-        }
-    }
-    
-    return cnt;
-}
+    var world = A.context.getImageData(0, 0, A.canvas.width, A.canvas.height);
+    var newWorld = A.context.getImageData(0, 0, A.canvas.width, A.canvas.height);
 
-// the world
-A.world = A.context.getImageData(0, 0, A.canvas.width, A.canvas.height);
-A.newWorld = A.context.getImageData(0, 0, A.canvas.width, A.canvas.height);
-
-// create the world
-A.createWorld(parseInt(0.2*A.canvas.width*A.canvas.height), A.world);
-A.context.putImageData(A.world, 0, 0);
-
-A.mainLoop = function() {
     if (A.inputs.k39) {
-        A.applyRules(A.world, A.newWorld);
-        A.context.putImageData(A.newWorld, 0, 0);
+        applyRules(world, newWorld);
+        A.context.putImageData(newWorld, 0, 0); 
     };
 }
 
-setInterval(A.mainLoop, 50);
+var world = A.context.getImageData(0, 0, A.canvas.width, A.canvas.height);
+createWorld(parseInt(0.2*A.canvas.width*A.canvas.height), world);
+A.context.putImageData(world, 0, 0);
+
+setInterval(mainLoop, 50);
