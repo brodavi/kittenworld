@@ -105,14 +105,14 @@ function applyRules(world, newWorld) {
 }
 
 function mainLoop() {
-    var start = new Date();
-    
     var world = A.context.getImageData(0, 0, A.canvas.width, A.canvas.height);
     var newWorld = A.context.getImageData(0, 0, A.canvas.width, A.canvas.height);
 
     if (A.inputs.k39) {
+        var start = new Date();
         applyRules(world, newWorld);
-        A.context.putImageData(newWorld, 0, 0); 
+        A.context.putImageData(newWorld, 0, 0);
+        console.log('time delta', new Date().getTime() - start.getTime());
     };
 }
 
