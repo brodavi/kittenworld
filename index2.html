@@ -5,13 +5,17 @@
     <title>LD48.23</title>
   </head>
   <body>
-    <canvas id="canvas" width="320" height="240">Needs Javascript and Canvas</canvas>
-    <div id="counts">
-      NullCount: <span id="nullCount"></span>
-      Soldier1Count: <span id="soldier1Count"></span>
-      Soldier2Count: <span id="soldier2Count"></span>
-      FoodCount: <span id="foodCount"></span>
-      WallCount: <span id="wallCount"></span>
+    <div>
+      <canvas id="canvas" width="320" height="240">Needs Javascript and Canvas</canvas>
+      <span id="counts" style="float: right">
+        Null Count: <span id="nullCount"></span><br />
+        Your Soldier Count: <span id="soldier1Count"></span><br />
+        Enemy Soldier Count: <span id="soldier2Count"></span><br />
+        Food Count: <span id="foodCount"></span><br />
+        Wall Count: <span id="wallCount"></span><br />
+        Walls Available: <span id="wallsAvailable"></span><br />
+        SELL a SOLDIER: <button onClick="handleSell()">SELL</button>
+      </span>
     </div>
     <script src="gol.js"></script>
   </body>
