@@ -1,17 +1,171 @@
 // the main namespace
 var A = {};
 
+A.game = {};
+
 A.canvas = document.getElementById('canvas');
+A.canvas2 = document.getElementById('canvas2');
 A.context = A.canvas.getContext('2d');
+A.context2 = A.canvas2.getContext('2d');
 A.context.fillRect(0, 0, A.canvas.width, A.canvas.height);
+A.context2.fillRect(0, 0, A.canvas2.width, A.canvas2.height);
 
 // Disable document scrolling
 document.onkeydown=function(){return event.keyCode!=38 && event.keyCode!=40 && event.keyCode!=32};
 
-// A.cleanCoords
-//
-// Helper for stupid mouse coords
-A.cleanCoords = function (e) {
+//prevent doubleclicking on canvas from selecting text on the page
+A.canvas.onselectstart=function(){return false;};
+A.canvas2.onselectstart=function(){return false;};
+
+A.buttons = new Array();
+
+A.kitten1 = {};
+
+var sellButtonImg = new Image();
+sellButtonImg.src = "sellButton.png";
+sellButtonImg.onload = function() {
+    sellButton.ready = true;
+};
+
+sellButton = {
+    img: sellButtonImg,
+    x: 10,
+    y: 10,
+    w: 50,
+    h: 30,
+    ready: false,
+    onClick: function() {
+        handleSell();
+    }
+};
+
+var holdButtonImg = new Image();
+holdButtonImg.src = "holdButton.png";
+holdButtonImg.onload = function() {
+    holdButton.ready = true;
+};
+
+holdButton = {
+    img: holdButtonImg,
+    x: 10,
+    y: 30,
+    w: 50,
+    h: 30,
+    ready: false,
+    onClick: function() {
+        A.kitten1.state = "hold";
+    }
+};
+
+var gatherButtonImg = new Image();
+gatherButtonImg.src = "gatherButton.png";
+gatherButtonImg.onload = function() {
+    gatherButton.ready = true;
+};
+
+gatherButton = {
+    img: gatherButtonImg,
+    x: 10,
+    y: 60,
+    w: 60,
+    h: 30,
+    ready: false,
+    onClick: function() {
+        A.kitten1.state = "gather";
+    }
+};
+
+var destroyButtonImg = new Image();
+destroyButtonImg.src = "destroyButton.png";
+destroyButtonImg.onload = function() {
+    destroyButton.ready = true;
+};
+
+destroyButton = {
+    img: destroyButtonImg,
+    x: 10,
+    y: 90,
+    w: 60,
+    h: 30,
+    ready: false,
+    onClick: function() {
+        A.kitten1.state = "destroy";
+    }
+};
+
+var stepButtonImg = new Image();
+stepButtonImg.src = "stepButton.png";
+stepButtonImg.onload = function() {
+    stepButton.ready = true;
+};
+
+stepButton = {
+    img: stepButtonImg,
+    x: 10,
+    y: 120,
+    w: 60,
+    h: 30,
+    ready: false,
+    onClick: function() {
+        A.game.step = true;
+    }
+};
+
+var playButtonImg = new Image();
+playButtonImg.src = "playButton.png";
+playButtonImg.onload = function() {
+    playButton.ready = true;
+};
+
+playButton = {
+    img: playButtonImg,
+    x: 10,
+    y: 150,
+    w: 60,
+    h: 30,
+    ready: false,
+    onClick: function() {
+        A.game.play = true;
+    }
+};
+
+var pauseButtonImg = new Image();
+pauseButtonImg.src = "pauseButton.png";
+pauseButtonImg.onload = function() {
+    pauseButton.ready = true;
+};
+
+pauseButton = {
+    img: pauseButtonImg,
+    x: 10,
+    y: 180,
+    w: 60,
+    h: 30,
+    ready: false,
+    onClick: function() {
+        A.game.play = false;
+    }
+};
+
+A.buttons.push(holdButton);
+A.buttons.push(gatherButton);
+A.buttons.push(destroyButton);
+A.buttons.push(stepButton);
+A.buttons.push(playButton);
+A.buttons.push(pauseButton);
+
+A.mapToButtons = function(coords) {
+    for (var i = 0; i < A.buttons.length; i++){
+        if (coords.x > A.buttons[i].x &&
+            coords.x < A.buttons[i].x + A.buttons[i].w &&
+            coords.y > A.buttons[i].y &&
+            coords.y < A.buttons[i].y + A.buttons[i].h) {
+            A.buttons[i].onClick();
+        }
+    }
+};
+
+A.cleanCoords = function(e) {
     return {
         x: e.x - A.canvas.offsetLeft,
         y: e.y - A.canvas.offsetTop
@@ -34,9 +188,9 @@ addEventListener("keyup", function (e) {
 
 addEventListener("click", function(e) {
     var goode = A.cleanCoords(e);
-    if (goode.x < A.canvas.width && goode.y < A.canvas.height) {
+    if (goode.x < A.canvas.width && goode.y < A.canvas.height) { // if clicking on the grid
         if (A.wallsAvailable === 0) {
-            alert("Sorry, you don't have any walls available. Sell 1 soldier to buy 5 walls.");
+            alert("Sorry, you don't have any walls available.\nSell 1 soldier to buy 5 walls.");
             return null;
         }
         var gridcoords = {
@@ -47,10 +201,16 @@ addEventListener("click", function(e) {
             A.world[gridcoords.i][gridcoords.j] = WALL;
             A.wallCount += 1;
         } else {
-            alert("You must click on a green (blank) spot to place a wall there.");
+            alert("You must click on a green (blank)\nspot to place a wall there.");
         }
         A.wallsAvailable -= 1;
         A.world.draw();
+    } else if (goode.x < A.canvas.width + 8 + A.canvas2.width && goode.y < A.canvas2.height) {
+        var canvas2Coords = {
+            x: goode.x - (A.canvas.width + 8),
+            y: goode.y
+        };
+        A.mapToButtons(canvas2Coords);
     }
 }, false);
 
@@ -69,15 +229,6 @@ window.requestAnimFrame = (function(){
 
 var GRID = 8;
 
-var NULL = 0; //"#333333";
-var SOLDIER1 = 1; //"#CC0000";
-var KING1 = 2; //"#EE0000";
-var SOLDIER2 = 3; //"#0000CC";
-var KING2 = 4; //"#0000EE";
-var FOOD = 5; //"#00FF88";
-var WALL = 6; //"#000000";
-var WALLSPERSOLDIER = 5;
-
 A.wallsAvailable = 0;
 
 A.nullCount = 0;
@@ -86,15 +237,26 @@ A.soldier2Count = 0;
 A.foodCount = 0;
 A.wallCount = 0;
 
+var WALLSPERSOLDIER = 5;
+
+var NULL = 0; //"#333333";
+var SOLDIER1 = 1; //"#550000";
+var KING1 = 2; //"#FF0000";
+var SOLDIER2 = 3; //"#000055";
+var KING2 = 4; //"#0000FF";
+var FOOD = 5; //"#00FF88";
+var WALL = 6; //"#000000";
+
 A.numberToColor = {
     0: "#333333",
-    1: "#CC0000",
-    2: "#EE0000",
-    3: "#0000CC",
-    4: "#0000EE",
+    1: "#550000",
+    2: "#FF0000",
+    3: "#000055",
+    4: "#0000FF",
     5: "#00FF88",
     6: "#000000"
 }
+
 A.ROWS = A.canvas.height / GRID;
 A.COLS = A.canvas.width / GRID;
 A.world = {};
@@ -116,7 +278,9 @@ function handleSell() {
     // yay, give the player a wall to use
     A.wallsAvailable += WALLSPERSOLDIER;
     A.soldier1Count -= 1;
-    alert("The life of your soldier has bought you " + WALLSPERSOLDIER + " walls. \nClick on the grid to place it at any time.");
+    alert("The life of your soldier has bought you " +
+          WALLSPERSOLDIER +
+          " walls. \nClick on the grid to place it at any time.");
     A.world.draw();
 };
 
@@ -144,8 +308,8 @@ function createWorld() {
         }
     }
     // place the kings
-    A.world[0][0] = KING1;
-    A.world[A.ROWS - 1][A.COLS - 1] = KING2;
+    A.world[1][1] = KING1;
+    A.world[A.ROWS - 2][A.COLS - 2] = KING2;
 
     // set the draw func
     A.world.draw = function() {
@@ -153,11 +317,25 @@ function createWorld() {
             for (var j = 0; j < A.COLS; j++) {
                 A.context.fillStyle = A.numberToColor[A.world[i][j]];
                 A.context.fillRect(j * GRID, i * GRID, GRID, GRID);
-                A.context.fillStyle = "#000000";
+                A.context.strokeStyle = "#000000";
                 A.context.strokeRect(j * GRID, i * GRID, GRID, GRID);
             }
         }
-        document.getElementById("nullCount").innerHTML = A.nullCount;
+
+        // paint the kings
+        A.context.lineWidth = "2px";
+        A.context.strokeStyle = "#FFFF00";
+        A.context.strokeRect(GRID - 1, GRID - 1, GRID + 2, GRID + 2);
+        A.context.strokeRect((A.COLS - 2) * GRID - 1, (A.ROWS - 2) * GRID - 1, GRID + 2, GRID + 2);
+
+        // paint the buttons
+        for (var i = 0; i < A.buttons.length; i++) {
+            if (A.buttons[i].ready) {
+                A.context2.drawImage(A.buttons[i].img, A.buttons[i].x, A.buttons[i].y, A.buttons[i].w, A.buttons[i].h);
+            }
+        }
+
+        // display counts
         document.getElementById("soldier1Count").innerHTML = A.soldier1Count;
         document.getElementById("soldier2Count").innerHTML = A.soldier2Count;
         document.getElementById("foodCount").innerHTML = A.foodCount;
@@ -216,17 +394,19 @@ function soldierRules(soldier, other, i, j) {
             A.soldier2Count -= 1;
         }
         A.foodCount += 1;
-    } else if (countNeighboring(FOOD, i, j) > 0) {
+    } else if (countNeighboring(FOOD, i, j) > 0) { // if there is food, grab it
         var coords = findNeighboring(FOOD, i, j);
         // find the first clockwise food and replace it with the soldier
         A.world[coords.row][coords.col] = soldier;
         A.foodCount -= 1;
         // replace soldier with nothing
         A.world[i][j] = NULL;
-    } else { // nothing around! what the...
+    } else { // nothing around! move somewhere
         var rand = Math.round(Math.random() * 2 - 1);
         var rand2 = Math.round(Math.random() * 2 - 1);
-        if (A.world[i + rand] !== undefined && A.world[i + rand][j + rand2] !== undefined) {
+        if (A.world[i + rand] !== undefined &&
+            A.world[i + rand][j + rand2] !== undefined &&
+            A.world[i + rand][j + rand2] !== WALL) {
             if (!(rand === 0 && rand2 === 0)) {
                 if (soldier === SOLDIER1) {
                     A.world[i + rand][j + rand2] = SOLDIER1;
@@ -248,50 +428,38 @@ function applyRules() {
             if (A.world[i][j] === SOLDIER2) { // if soldier2....
                 soldierRules(SOLDIER2, SOLDIER1, i, j);
             }
-            if (A.world[i][j] === FOOD) { // if food....
-                // if surrounded by foods... randomly spawn either a soldier1 or soldier2
-                if (countNeighboring(FOOD, i, j) > 3) {
-                    var rand = Math.random();
-                    if (rand < 0.1) {
-                        A.world[i][j] = SOLDIER1;
-                        A.soldier1Count += 1;
-                        A.foodCount -= 1;
-                    } else if (rand < 0.2) {
-                        A.world[i][j] = SOLDIER2;
-                        A.soldier2Count += 1;
-                        A.foodCount -= 1;
-                    }
-                };
-            }
-            if (A.world[i][j] === 9) { // if nothing...
-                var rand = function(){Math.random()};
-                if (rand <= 0.1) {
-                    A.world[i][j] = SOLDIER1;
-                    A.soldier1Count += 1;
-                } else if (rand <= 0.2) {
-                    A.world[i][j] = SOLDIER2;
-                    A.soldier2Count += 1;
-                } else if (Math.random() <= 0.3) {
-                    A.world[i][j] = FOOD; // spawn some food maybe
+            if (A.world[i][j] === NULL) { // if null....
+                var rand = Math.random();
+                if (rand < 0.05) {
+                    A.world[i][j] = FOOD;
                     A.foodCount += 1;
-                }
+                };
             }
         }
     }
 }
 
 function mainLoop() {
-    if (A.inputs.k39) {
+
+    if (A.game.step || A.game.play) { // hit 'right'
         var start = new Date();
         applyRules(A.world);
         A.world.draw(); // to optimize, just draw AS the rules are happening... we don't need to redraw
         console.log('time delta', new Date().getTime() - start.getTime());
+        if (A.game.step) {
+            A.game.step = false;
+        }
     };
 }
 
-// create it
-createWorld();
-// draw it
-A.world.draw();
+// When everything is loaded, do this
+window.addEventListener('load', function() {
 
-setInterval(mainLoop, 50);
+    // create it
+    createWorld();
+    // draw it
+    A.world.draw();
+
+    setInterval(mainLoop, 50);
+
+}, false);
