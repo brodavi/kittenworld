@@ -69,11 +69,13 @@ window.requestAnimFrame = (function(){
 
 var GRID = 8;
 
-var NULL = "#333333";
-var SOLDIER1 = "#CC0000";
-var SOLDIER2 = "#0000CC";
-var FOOD = "#00FF88";
-var WALL = "#000000";
+var NULL = 0; //"#333333";
+var SOLDIER1 = 1; //"#CC0000";
+var KING1 = 2; //"#EE0000";
+var SOLDIER2 = 3; //"#0000CC";
+var KING2 = 4; //"#0000EE";
+var FOOD = 5; //"#00FF88";
+var WALL = 6; //"#000000";
 var WALLSPERSOLDIER = 5;
 
 A.wallsAvailable = 0;
@@ -84,22 +86,15 @@ A.soldier2Count = 0;
 A.foodCount = 0;
 A.wallCount = 0;
 
-A.colorToLabel = {
-    "#333333": "NULL",
-    "#CC0000": "SOLDIER1",
-    "#0000CC": "SOLDIER2",
-    "#00FF88": "FOOD",
-    "#000000": "WALL"
+A.numberToColor = {
+    0: "#333333",
+    1: "#CC0000",
+    2: "#EE0000",
+    3: "#0000CC",
+    4: "#0000EE",
+    5: "#00FF88",
+    6: "#000000"
 }
-
-A.colors = {
-    0: NULL,
-    1: SOLDIER1,
-    2: SOLDIER2,
-    3: FOOD,
-    4: WALL
-}
-
 A.ROWS = A.canvas.height / GRID;
 A.COLS = A.canvas.width / GRID;
 A.world = {};
@@ -148,10 +143,15 @@ function createWorld() {
             }
         }
     }
+    // place the kings
+    A.world[0][0] = KING1;
+    A.world[A.ROWS - 1][A.COLS - 1] = KING2;
+
+    // set the draw func
     A.world.draw = function() {
         for (var i = 0; i < A.ROWS; i++) {
             for (var j = 0; j < A.COLS; j++) {
-                A.context.fillStyle = A.world[i][j];
+                A.context.fillStyle = A.numberToColor[A.world[i][j]];
                 A.context.fillRect(j * GRID, i * GRID, GRID, GRID);
                 A.context.fillStyle = "#000000";
                 A.context.strokeRect(j * GRID, i * GRID, GRID, GRID);
@@ -226,8 +226,8 @@ function soldierRules(soldier, other, i, j) {
     } else { // nothing around! what the...
         var rand = Math.round(Math.random() * 2 - 1);
         var rand2 = Math.round(Math.random() * 2 - 1);
-        if (A.world[i + rand] && A.world[i + rand][j + rand2]) {
-            if (rand !== 0 && rand2 !== 0) {
+        if (A.world[i + rand] !== undefined && A.world[i + rand][j + rand2] !== undefined) {
+            if (!(rand === 0 && rand2 === 0)) {
                 if (soldier === SOLDIER1) {
                     A.world[i + rand][j + rand2] = SOLDIER1;
                 } else {
