@@ -5,13 +5,6 @@ A.canvas = document.getElementById('canvas');
 A.context = A.canvas.getContext('2d');
 A.context.fillRect(0, 0, A.canvas.width, A.canvas.height);
 
-//prevent doubleclicking on canvas from selecting text on the page
-A.canvas.onselectstart=function(){return false;};
-
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
-//prevent right-click from getting a menu
-//addEventListener('contextmenu', function(evt){evt.preventDefault();}, false);
-
 // Disable document scrolling
 document.onkeydown=function(){return event.keyCode!=38 && event.keyCode!=40 && event.keyCode!=32};
 
@@ -54,7 +47,7 @@ addEventListener("click", function(e) {
             A.world[gridcoords.i][gridcoords.j] = WALL;
             A.wallCount += 1;
         } else {
-            alert("You must click on a grey (blank) spot to place a wall there.");
+            alert("You must click on a green (blank) spot to place a wall there.");
         }
         A.wallsAvailable -= 1;
         A.world.draw();
