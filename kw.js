@@ -172,10 +172,10 @@ function applyRules() {
     for (var i = 0; i < A.ROWS; i++) {
         for (var j = 0; j < A.COLS; j++) {
             if (A.world[i][j] === ARMY1) { // if army1....
-                soldierRules(ARMY1, ARMY2, i, j);
+                armyRules(ARMY1, ARMY2, i, j);
             }
             if (A.world[i][j] === ARMY2) { // if army2....
-                soldierRules(ARMY2, ARMY1, i, j);
+                armyRules(ARMY2, ARMY1, i, j);
             }
             if (A.world[i][j] === NULL) { // if null....
                 var rand = Math.random();

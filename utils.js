@@ -129,24 +129,46 @@ function createWorld() {
     A.world[1][1] = KING1;
     A.world[A.ROWS - 2][A.COLS - 2] = KING2;
 
+    var army1img = new Image()
+    army1img.src = "army1.png";
+    var army2img = new Image()
+    army2img.src = "army2.png";
     // set the draw func
     A.world.draw = function() {
         for (var i = 0; i < A.ROWS; i++) {
             for (var j = 0; j < A.COLS; j++) {
-                A.context.fillStyle = A.numberToColor[A.world[i][j]];
-                A.context.fillRect(j * CELLSIZE, i * CELLSIZE, CELLSIZE, CELLSIZE);
-                A.context.strokeStyle = "#000000";
-                A.context.strokeRect(j * CELLSIZE, i * CELLSIZE, CELLSIZE, CELLSIZE);
+                    A.context.fillStyle = A.numberToColor[A.world[i][j]];
+                    A.context.fillRect(j * CELLSIZE, i * CELLSIZE, CELLSIZE, CELLSIZE);
+                if (A.world[i][j] === ARMY1) {
+                    A.context.drawImage(army1img, j * CELLSIZE, i * CELLSIZE);
+                } else if (A.world[i][j] === ARMY2) {
+                    A.context.drawImage(army2img, j * CELLSIZE, i * CELLSIZE);
+                } else {
+                    A.context.strokeStyle = "#000000";
+                    A.context.strokeRect(j * CELLSIZE, i * CELLSIZE, CELLSIZE, CELLSIZE);
+                }
             }
         }
 
-        // paint the kings
+        // paint king 1
+        var king1x = 8;
+        var king1y = Math.floor(A.ROWS / 2) * CELLSIZE;
+        A.context.fillStyle = "#333333";
+        A.context.fillRect(king1x, king1y, CELLSIZE, CELLSIZE);
+        A.context.drawImage(army1img, king1x, king1y);
         A.context.lineWidth = "2px";
         A.context.strokeStyle = "#FFFF00";
+        A.context.strokeRect(king1x - 2, king1y - 2, CELLSIZE + 2, CELLSIZE + 2);
 
-        // and their 'crowns'
-        A.context.strokeRect(CELLSIZE - 1, CELLSIZE - 1, CELLSIZE + 2, CELLSIZE + 2);
-        A.context.strokeRect((A.COLS - 2) * CELLSIZE - 1, (A.ROWS - 2) * CELLSIZE - 1, CELLSIZE + 2, CELLSIZE + 2);
+        // paint king 2
+        var king2x = A.COLS * CELLSIZE - CELLSIZE;
+        var king2y = Math.floor(A.ROWS / 2) * CELLSIZE;
+        A.context.fillStyle = "#333333";
+        A.context.fillRect(king2x, king2y, CELLSIZE, CELLSIZE);
+        A.context.drawImage(army2img, king2x, king2y);
+        A.context.lineWidth = "2px";
+        A.context.strokeStyle = "#FFFF00";
+        A.context.strokeRect(king2x - 2, king2y - 2, CELLSIZE + 2, CELLSIZE + 2);
 
         // paint the buttons
         for (var i = 0; i < A.buttons.length; i++) {
