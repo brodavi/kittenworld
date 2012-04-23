@@ -121,6 +121,8 @@ A.pauseButton = A.makeButton("pause", 75, 200, 50, 30, function() {A.game.state 
                                                                    A.pauseButton.show = false;
                                                                    A.playButton.show = true;});
 
+A.resetButton = A.makeButton("reset", 165, 210, 30, 30, function() {resetGame()});
+
 // hide the pause button for now
 A.pauseButton.show = false;
 
@@ -132,6 +134,20 @@ A.buttons.push(A.destroyButton);
 A.buttons.push(A.stepButton);
 A.buttons.push(A.playButton);
 A.buttons.push(A.pauseButton);
+A.buttons.push(A.resetButton);
+
+// resets everything
+function resetGame() {
+    A.game.state = "pause";
+    A.kitten1.state = "gather";
+    A.pauseButton.show = false;
+    A.playButton.show = true;
+    A.army1Count = 0;
+    A.army2Count = 0;
+    A.canDestroyWalls = 0;
+    createWorld();
+    A.world.draw();
+}
 
 // handles the selling of armies
 function handleSell() {

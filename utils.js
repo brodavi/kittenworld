@@ -197,7 +197,8 @@ function createWorld() {
             }
         }
 
-        // display counts
+        // display info
+        document.getElementById("currentSuggestion").innerHTML = A.kitten1.state;
         document.getElementById("army1Count").innerHTML = A.army1Count;
         document.getElementById("army2Count").innerHTML = A.army2Count;
         document.getElementById("canDestroyWalls").innerHTML = A.canDestroyWalls;
