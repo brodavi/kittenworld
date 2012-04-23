@@ -31,6 +31,7 @@ A.makeButton = function(id, x, y, w, h, callBack){
         y: y,
         w: w,
         h: h,
+        show: true,
         ready: false,
         onClick: function() {
             callBack();
@@ -126,13 +127,11 @@ function createWorld() {
     }
 
     // place the kings
-    A.world[1][1] = KING1;
-    A.world[A.ROWS - 2][A.COLS - 2] = KING2;
-
     var army1img = new Image()
     army1img.src = "army1.png";
     var army2img = new Image()
     army2img.src = "army2.png";
+
     // set the draw func
     A.world.draw = function() {
         for (var i = 0; i < A.ROWS; i++) {
@@ -150,6 +149,9 @@ function createWorld() {
             }
         }
 
+        // add king1
+        A.world[Math.floor(A.ROWS / 2)][1] = KING1;
+        
         // paint king 1
         var king1x = 8;
         var king1y = Math.floor(A.ROWS / 2) * CELLSIZE;
@@ -160,8 +162,11 @@ function createWorld() {
         A.context.strokeStyle = "#FFFF00";
         A.context.strokeRect(king1x - 2, king1y - 2, CELLSIZE + 2, CELLSIZE + 2);
 
+        // add king2
+        A.world[Math.floor(A.ROWS / 2)][A.COLS - 2] = KING2;
+
         // paint king 2
-        var king2x = A.COLS * CELLSIZE - CELLSIZE;
+        var king2x = A.COLS * CELLSIZE - 2 * CELLSIZE;
         var king2y = Math.floor(A.ROWS / 2) * CELLSIZE;
         A.context.fillStyle = "#333333";
         A.context.fillRect(king2x, king2y, CELLSIZE, CELLSIZE);
@@ -172,7 +177,7 @@ function createWorld() {
 
         // paint the buttons
         for (var i = 0; i < A.buttons.length; i++) {
-            if (A.buttons[i].ready) {
+            if (A.buttons[i].ready && A.buttons[i].show === true) {
                 A.context2.drawImage(A.buttons[i].img, A.buttons[i].x, A.buttons[i].y, A.buttons[i].w, A.buttons[i].h);
             }
         }
