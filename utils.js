@@ -101,6 +101,22 @@ function countNeighboring (thing, i, j) {
     return cnt;
 }
 
+// grab images for use later
+var army1img = new Image()
+army1img.src = "army1.png";
+var army2img = new Image()
+army2img.src = "army2.png";
+var king1img = new Image()
+king1img.src = "king1.png";
+var king2img = new Image()
+king2img.src = "king2.png";
+var foodimg = new Image()
+foodimg.src = "food.png";
+var wallimg = new Image()
+wallimg.src = "wall.png";
+var kwallimg = new Image()
+kwallimg.src = "kwall.png";
+
 // generates the tiny world
 function createWorld() {
     for (var i = 0; i < A.ROWS; i++) {
@@ -113,10 +129,10 @@ function createWorld() {
             } else if (rand < 0.3) {
                 A.world[i].push(WALL);
                 A.wallCount += 1;
-            } else if (rand < 0.325) {
+            } else if (rand < 0.325 && j <= (A.COLS / 2)) {
                 A.world[i].push(ARMY1);
                 A.army1Count += 1;
-            } else if (rand < 0.35) {
+            } else if (rand < 0.35 && j > (A.COLS / 2)) {
                 A.world[i].push(ARMY2);
                 A.army2Count += 1;
             } else {
@@ -126,26 +142,25 @@ function createWorld() {
         }
     }
 
-    // place the kings
-    var army1img = new Image()
-    army1img.src = "army1.png";
-    var army2img = new Image()
-    army2img.src = "army2.png";
+    A.world2 = A.world;
 
     // set the draw func
     A.world.draw = function() {
         for (var i = 0; i < A.ROWS; i++) {
             for (var j = 0; j < A.COLS; j++) {
-                    A.context.fillStyle = A.numberToColor[A.world[i][j]];
+                // always draw a null
+                A.context.fillStyle = "#333333";
+                A.context.fillRect(j * CELLSIZE, i * CELLSIZE, CELLSIZE, CELLSIZE);
+                if (A.world[i][j] === PHEROMONE1 || A.world[i][j] === NULL) {
+                    A.context.fillStyle = "#333333";
                     A.context.fillRect(j * CELLSIZE, i * CELLSIZE, CELLSIZE, CELLSIZE);
-                if (A.world[i][j] === ARMY1) {
-                    A.context.drawImage(army1img, j * CELLSIZE, i * CELLSIZE);
-                } else if (A.world[i][j] === ARMY2) {
-                    A.context.drawImage(army2img, j * CELLSIZE, i * CELLSIZE);
                 } else {
-                    A.context.strokeStyle = "#000000";
-                    A.context.strokeRect(j * CELLSIZE, i * CELLSIZE, CELLSIZE, CELLSIZE);
+                    // draw the image
+                    A.context.drawImage(A.numberToIMG[A.world[i][j]], j * CELLSIZE, i * CELLSIZE);
                 }
+                // always draw cell outline
+                A.context.strokeStyle = "#000000";
+                A.context.strokeRect(j * CELLSIZE, i * CELLSIZE, CELLSIZE, CELLSIZE);
             }
         }
 
@@ -157,10 +172,10 @@ function createWorld() {
         var king1y = Math.floor(A.ROWS / 2) * CELLSIZE;
         A.context.fillStyle = "#333333";
         A.context.fillRect(king1x, king1y, CELLSIZE, CELLSIZE);
-        A.context.drawImage(army1img, king1x, king1y);
-        A.context.lineWidth = "2px";
-        A.context.strokeStyle = "#FFFF00";
-        A.context.strokeRect(king1x - 2, king1y - 2, CELLSIZE + 2, CELLSIZE + 2);
+        A.context.drawImage(king1img, king1x, king1y);
+        A.context.lineWidth = "1px";
+        A.context.strokeStyle = "#0000FF";
+        A.context.strokeRect(king1x - 1, king1y - 1, CELLSIZE + 2, CELLSIZE + 2);
 
         // add king2
         A.world[Math.floor(A.ROWS / 2)][A.COLS - 2] = KING2;
@@ -170,10 +185,10 @@ function createWorld() {
         var king2y = Math.floor(A.ROWS / 2) * CELLSIZE;
         A.context.fillStyle = "#333333";
         A.context.fillRect(king2x, king2y, CELLSIZE, CELLSIZE);
-        A.context.drawImage(army2img, king2x, king2y);
-        A.context.lineWidth = "2px";
-        A.context.strokeStyle = "#FFFF00";
-        A.context.strokeRect(king2x - 2, king2y - 2, CELLSIZE + 2, CELLSIZE + 2);
+        A.context.drawImage(king2img, king2x, king2y);
+        A.context.lineWidth = "1px";
+        A.context.strokeStyle = "#0000FF";
+        A.context.strokeRect(king2x - 1, king2y - 1, CELLSIZE + 2, CELLSIZE + 2);
 
         // paint the buttons
         for (var i = 0; i < A.buttons.length; i++) {
@@ -187,6 +202,6 @@ function createWorld() {
         document.getElementById("army2Count").innerHTML = A.army2Count;
         document.getElementById("foodCount").innerHTML = A.foodCount;
         document.getElementById("wallCount").innerHTML = A.wallCount;
-        document.getElementById("wallsAvailable").innerHTML = A.wallsAvailable;
+        document.getElementById("canDestroyWalls").innerHTML = A.canDestroyWalls;
     }
 }
