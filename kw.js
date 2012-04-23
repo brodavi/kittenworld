@@ -286,7 +286,7 @@ function zombieRules(i, j) {
             var randi = Math.round(Math.random() * 2 - 1); // either -1, 0, or 1
             var randj = Math.round(Math.random() * 2 - 1);
             zombieMaybeMove(i, j, i + randi, j + randj);
-        } else if (rand < 0.25) { // a 0.05 percent chance on top of moving probability
+        } else if (rand < 0.21) {
             // generally move to the left
             var randleft = Math.round(Math.random() * 2 - 1); // either -1, 0, or 1
             if (randleft === -1) {
