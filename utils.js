@@ -200,8 +200,6 @@ function createWorld() {
         // display counts
         document.getElementById("army1Count").innerHTML = A.army1Count;
         document.getElementById("army2Count").innerHTML = A.army2Count;
-        document.getElementById("foodCount").innerHTML = A.foodCount;
-        document.getElementById("wallCount").innerHTML = A.wallCount;
         document.getElementById("canDestroyWalls").innerHTML = A.canDestroyWalls;
     }
 }

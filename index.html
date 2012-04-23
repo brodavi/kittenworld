@@ -8,14 +8,51 @@
     <div>
       <canvas id="canvas" width="248" height="248">Needs Javascript and Canvas</canvas>
       <canvas id="canvas2" width="200" height="248">Canvas 2</canvas>
-      <span id="counts" style="float: right">
-        Your Army Count: <span id="army1Count"></span><br />
-        Enemy Army Count: <span id="army2Count"></span><br />
-        Food Count: <span id="foodCount"></span><br />
-        Wall Count: <span id="wallCount"></span><br />
-        Can Destroy: <span id="canDestroyWalls"></span> Walls<br />
+      <span id="counts" style="float: right; border-style: solid"
+            borderstyle="black 1px">
+        <br />
+        <div style="border-style: solid; margin-left: auto;
+                    margin-right: auto; width: 50%;">
+          Kitten Count: <span id="army1Count"></span><br />
+          Zombie Kitten Count: <span id="army2Count"></span><br />
+          Can Destroy: <span id="canDestroyWalls"></span> Walls<br />
+        </div>
+        <br />
+        <ul>
+          <p>
+            <h2 align="center">Welcome to Kitten World.<br />It is a tiny little world.</h2>
+            <li>You command the red kittens. Your job is to surround the
+              <br/>Zombie Kitten King with three red kittens. This will win you
+              the game.
+            <li>If three zombie kittens surround your king, you will
+              lose.
+            <li>If your kittens eat 5 fishes, another kitten will
+            spawn.
+            <li>Fishes randomly spawn in the world.
+            <li>Zombie kittens eat fishes, but they do not multiply.
+            <li>If a zombie kitten touches one of your kittens,
+              <br/>your kitten will die.
+            <li>If two of your kittens touches one zombie kitten,
+              <br/>that zombie kitten will die.
+              <h3 align="center"> Suggestions for your Kittens </h3>
+            <li>While you cannot control your kittens directly, you
+              <br/>can give them "suggestions".
+            <li>Order your kittens to "HOLD" to stop them from moving.
+            <li>Order your kittens to "GATHER" to start randomly
+              <br/>moving around, gathering fishes to build your numbers.
+            <li>Order your kittens to "DESTROY" to move in the general direction
+              <br/>of the Zombie Kitten King, in order to destroy him.
+              <h3 align="center"> Selling your kittens </h3>
+            <li>You can "SELL" one of your kittens for the ability to
+              <br/>destroy any wall you click on.
+              <h3 align="center"> Stepping the game </h3>
+            <li>You can "STEP" the game one turn at a time, or you can
+              <br />"PLAY" to loop the game automatically.
+          </ul>
+        </p>
       </span>
     </div>
+            <img src="kwlogo.png" width="400"/>
     <script src="utils.js"></script>
     <script src="kw.js"></script>
   </body>

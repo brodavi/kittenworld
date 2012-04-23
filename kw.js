@@ -106,18 +106,18 @@ A.COLS = A.canvas.width / CELLSIZE;
 A.world = {};
 
 // make some buttons
-A.sellButton = A.makeButton("sell", 10, 0, 50, 30, handleSell);
-A.holdButton = A.makeButton("hold", 10, 30, 50, 30, function() {A.kitten1.state = "hold"});
-A.gatherButton = A.makeButton("gather", 10, 60, 50, 30, function() {A.kitten1.state = "gather"});
-A.destroyButton = A.makeButton("destroy", 10, 90, 50, 30, function() {A.kitten1.state = "destroy"});
-A.stepButton = A.makeButton("step", 10, 120, 50, 30, function() {A.game.step = true;
+A.sellButton = A.makeButton("sell", 75, 10, 50, 30, handleSell);
+A.holdButton = A.makeButton("hold", 10, 70, 50, 30, function() {A.kitten1.state = "hold"});
+A.gatherButton = A.makeButton("gather", 75, 70, 50, 30, function() {A.kitten1.state = "gather"});
+A.destroyButton = A.makeButton("destroy", 140, 70, 50, 30, function() {A.kitten1.state = "destroy"});
+A.stepButton = A.makeButton("step", 75, 150, 50, 30, function() {A.game.step = true;
                                                                  A.game.state = "pause";
                                                                  A.pauseButton.show = false;
                                                                  A.playButton.show = true;});
-A.playButton = A.makeButton("play", 10, 180, 50, 30, function() {A.game.state = "play";
+A.playButton = A.makeButton("play", 75, 200, 50, 30, function() {A.game.state = "play";
                                                                  A.playButton.show = false;
                                                                  A.pauseButton.show = true;});
-A.pauseButton = A.makeButton("pause", 10, 180, 50, 30, function() {A.game.state = "pause";
+A.pauseButton = A.makeButton("pause", 75, 200, 50, 30, function() {A.game.state = "pause";
                                                                    A.pauseButton.show = false;
                                                                    A.playButton.show = true;});
 
@@ -176,6 +176,7 @@ function addKitten() {
 A.kittenFood = 0; // the var counting kitten food
 A.kitten1.state = "gather"; // initialize to gather
 
+// try to move kitten here
 function kittenMaybeMove(i, j, i2, j2) {
     if (A.world[i2] !== undefined &&
         A.world[i2][j2] !== undefined &&
@@ -234,6 +235,7 @@ function kittenRules(i, j) {
     }
 }
 
+// try to move zombie here
 function zombieMaybeMove(i, j, i2, j2) {
     if (A.world[i2] !== undefined &&
         A.world[i2][j2] !== undefined &&
