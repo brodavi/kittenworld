@@ -313,7 +313,7 @@ function applyRules() {
                 if (countNeighboring(ARMY2, i, j) > 2) { // if surrounded by zombies
                     if (A.game.state !== "lost") {
                         alert ("Game over! Your kitten king has been surrounded by zombies!");
-//                        A.resetGame();
+                        resetGame();
                         A.game.state = "lost";
                     }
                 }
@@ -321,13 +321,11 @@ function applyRules() {
                 if (countNeighboring(ARMY1, i, j) > 2) { // if surrounded by kittens
                     if (A.game.state !== "won") {
                         alert ("You won! Your kittens took out the zombie king!");
-//                        A.resetGame();
+                        resetGame();
                         A.game.state = "won";
                     }
                 }
             } else if (cell === PHEROMONE1) { // if pheromone1...
-                A.world2[i][j] = NULL;
-            } else if (cell === PHEROMONE2) { // if pheromone2...
                 A.world2[i][j] = NULL;
             } else if (cell === NULL) { // if null....
                 // maybe randomly spawn food?
@@ -351,12 +349,7 @@ function mainLoop() {
 
         // apply all world2 changes to world
         A.world = A.world2;
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11111
-        //
-        // OOOOOOOOOHHHHHHHHMMMMMMMYYYYYYYYYYGGGGGGGGGOOOOOOOOOODDDDDDDDDDDDDDD!!!!!!!!!!!!!
-        // to optimize, just draw AS the rules are happening... we don't need to redraw
         A.world.draw();
-//        console.log('time delta', new Date().getTime() - start.getTime());
         if (A.game.step) {
             A.game.step = false;
         }
