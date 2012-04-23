@@ -1,0 +1,7 @@
+This is my Ludum Dare 23 Jam entry.
+
+It all started with the theme "tiny world". I thought to myself "cellular automata". Things went downhill after that.
+
+Still, I consider it a success. I learned a lot, had a great time making it (spent with excellent company), and I think I did better this time than last LD48. I have win and lose conditions, some retro tracker music, and it is close enough to cellular automata that I'm not going to complain.
+
+The CA stuff: I would not consider Kitten World a true Celluar Automata implementation. Kitten World is stochastic. However, I am definitely not creating objects here. There is no saved state, these are only numbers in arrays (it SHOULD be a 1d array, but I got 'lazy'). All behavior is probabalistic and in the form of rules.
